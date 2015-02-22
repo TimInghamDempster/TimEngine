@@ -1,5 +1,6 @@
 #include <windows.h>
 
+#include "../Platform/D3DRenderer.cpp"
 #include "../Engine/GameWorld.cpp"
 
 const wchar_t g_className[] = L"myWindowClass";
@@ -28,8 +29,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     WNDCLASSEX wc;
     HWND hwnd;
     MSG Msg;
-
-	World::GameWolrd world;
 
 	g_running = true;
 
@@ -68,6 +67,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
 
+	Renderer::Init(hwnd);
+
+	World::GameWolrd world;
+
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
@@ -79,6 +82,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			DispatchMessage(&Msg);
 		}
 		world.Tick();
+		Renderer::Draw();
 	}
+
+	Renderer::CleanUp();
+
     return 0;
 }
