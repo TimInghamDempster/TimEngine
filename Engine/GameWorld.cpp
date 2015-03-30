@@ -1,8 +1,18 @@
 namespace World
 {
-	class GameWolrd
+	using std::u16string;
+	using std::ifstream;
+
+	void Tick()	{}
+
+	void LoadLevel(u16string filename)
 	{
-	public:
-		void Tick()	{}
-	};
+		ifstream levelFile;
+		bool success = Platform::OpenForRead(filename, levelFile);
+
+		if(!success)
+		{
+			return;
+		}
+	}
 }
