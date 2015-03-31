@@ -55,5 +55,8 @@
     <ClCompile Include="Engine\Handle.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Config.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

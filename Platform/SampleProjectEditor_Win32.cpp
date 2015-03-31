@@ -1,9 +1,12 @@
 #include <windows.h>
 #include <string>
+#include <fstream>
+#include <vector>
 
 #include "../Engine/Handle.cpp"
 #include "../Platform/TypesWin32.cpp"
 #include "../Engine/Rect.cpp"
+#include "../Engine/Config.cpp"
 #include "../Platform/StringUtilVCpp.cpp"
 #include "../Engine/Logging.cpp"
 #include "../Platform/Win32IO.cpp"
@@ -68,6 +71,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
         NULL, NULL, hInstance, NULL);
+
+	Engine::ScreenRect.Top = 0;
+	Engine::ScreenRect.Left = 0;
+	Engine::ScreenRect.Height = 1280;
+	Engine::ScreenRect.Width = 720;
 
     if(hwnd == NULL)
     {

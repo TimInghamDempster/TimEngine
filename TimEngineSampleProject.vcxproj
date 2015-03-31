@@ -25,6 +25,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Engine\Config.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Engine\GameWorld.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

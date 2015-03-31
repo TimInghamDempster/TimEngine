@@ -19,7 +19,7 @@ namespace Utils
 		friend bool operator==(Handle a, Handle b) { return a.m_val == b.m_val; }
 		friend bool operator!=(Handle a, Handle b) { return a.m_val != b.m_val; }
 
-		impl GetValue() { return m_val; }
+		inline impl GetValue() { return m_val; }
 
 	private:
 		impl m_val;

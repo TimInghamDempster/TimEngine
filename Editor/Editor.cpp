@@ -15,7 +15,7 @@ namespace Editor
 
 	void BuildUI()
 	{
-		Utils::uRect mainMenuRect = { /*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ 1024 };
+		Utils::uRect mainMenuRect = { /*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ Engine::ScreenRect.Width };
 		mainMenu = UI::AddItem(mainMenuRect);
 
 		Utils::uRect fileButtonRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ 128 };
