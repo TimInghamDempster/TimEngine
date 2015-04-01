@@ -15,16 +15,16 @@ namespace Editor
 
 	void BuildUI()
 	{
-		Utils::uRect mainMenuRect = { /*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ Engine::ScreenRect.Width };
-		mainMenu = UI::AddItem(mainMenuRect);
+		Utils::Rect mainMenuRect = { /*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ Engine::ScreenRect.Width };
+		mainMenu = UI::AddItem(mainMenuRect, 0);
 
-		Utils::uRect fileButtonRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ 128 };
-		fileButton = UI::AddItem(fileButtonRect, mainMenu);
+		Utils::Rect fileButtonRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ 128 };
+		fileButton = UI::AddItem(fileButtonRect, 1, mainMenu);
 
-		Utils::uRect fileMenuRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 100, /*right*/ 128 };
-		fileMenu = UI::AddItem(fileButtonRect, mainMenu);
+		Utils::Rect fileMenuRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 100, /*right*/ 128 };
+		fileMenu = UI::AddItem(fileButtonRect, 1, mainMenu);
 
-		Utils::uRect saveButtonRect = {/*top*/ 10, /*left*/ 0, /*bottom*/ 20, /*right*/ 128 };
-		saveButton = UI::AddItem(saveButtonRect, fileMenu);
+		Utils::Rect saveButtonRect = {/*top*/ 10, /*left*/ 0, /*bottom*/ 20, /*right*/ 128 };
+		saveButton = UI::AddItem(saveButtonRect, 2, fileMenu);
 	}
 }
