@@ -3,12 +3,14 @@
 #include <string>
 namespace Platform
 {
-	bool OpenForRead(const std::u16string filename, std::ifstream& stream)
+	bool OpenForRead(const std::u16string filename, std::ifstream& stream, std::ios::openmode mode = std::ios::in)
 	{
-		stream.open(Platform::Utf16ToWideString(filename), std::ios::in);
+		std::wstring convertedFilename = Platform::Utf16ToWideString(filename);
+		stream.open(convertedFilename, mode);
 
 		if(stream.fail() || stream.bad() || !stream.good() || !stream.is_open())
 		{
+			std::string error = strerror(errno);
 			Engine::Log(Platform::WideStringToUtf16(L"Error reading file: ") + filename);
 			return false;
 		}

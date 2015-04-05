@@ -1,19 +1,22 @@
+
 #include <windows.h>
 #include <string>
 #include <fstream>
 #include <vector>
 
-#include "../Engine/Handle.cpp"
-#include "../Platform/TypesWin32.cpp"
-#include "../Engine/Rect.cpp"
-#include "../Engine/Config.cpp"
-#include "../Platform/StringUtilVCpp.cpp"
-#include "../Engine/Logging.cpp"
-#include "../Platform/Win32IO.cpp"
-#include "../Platform/D3DRenderer.cpp"
-#include "../Engine/UI.cpp"
-#include "../Engine/GameWorld.cpp"
-#include "../Editor/Editor.cpp"
+#include <D3D11.h>
+
+#include "../../Engine/Handle.cpp"
+#include "TypesWin32.cpp"
+#include "../../Engine/Rect.cpp"
+#include "../../Engine/Config.cpp"
+#include "StringUtilVCpp.cpp"
+#include "../../Engine/Logging.cpp"
+#include "Win32IO.cpp"
+#include "../../Engine/FileHelpers.cpp"
+#include "Mesh.cpp"
+#include "D3DRenderer.cpp"
+#include "../../Engine/GameWorld.cpp"
 
 const wchar_t g_className[] = L"myWindowClass";
 bool g_running;
@@ -74,8 +77,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Engine::ScreenRect.Top = 0;
 	Engine::ScreenRect.Left = 0;
-	Engine::ScreenRect.Height = 1280;
-	Engine::ScreenRect.Width = 720;
+	Engine::ScreenRect.Height = 720;
+	Engine::ScreenRect.Width = 1280;
 
     if(hwnd == NULL)
     {
@@ -86,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Renderer::Init(hwnd);
 
-	Editor::Init();
+	World::LoadLevel(Platform::WideStringToUtf16(L"Start.lvl"));
 
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
@@ -98,6 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			TranslateMessage(&Msg);
 			DispatchMessage(&Msg);
 		}
+		World::Tick();
 		Renderer::Draw();
 	}
 

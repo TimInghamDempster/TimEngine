@@ -17,37 +17,28 @@
     <Filter Include="Source Files\Editor">
       <UniqueIdentifier>{b1d4858f-21cd-474f-8025-c66d2bded14c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Platform\Win32">
+      <UniqueIdentifier>{e13e8245-566a-4edf-a92c-2d61ec144de7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Content">
+      <UniqueIdentifier>{00dc7ab5-0613-42f8-ab53-a88456a71981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Content\Shaders">
+      <UniqueIdentifier>{5b543d78-c3ec-4922-b42e-ad9356e4022c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Platform\SampleProject_Win32.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GameWorld.cpp">
       <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform\D3DRenderer.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform\SampleProjectEditor_Win32.cpp">
-      <Filter>Source Files\Platform</Filter>
     </ClCompile>
     <ClCompile Include="Editor\Editor.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Platform\Win32IO.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Logging.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Platform\StringUtilVCpp.cpp">
-      <Filter>Source Files\Platform</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\UI.cpp">
       <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Platform\TypesWin32.cpp">
-      <Filter>Source Files\Platform</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Rect.cpp">
       <Filter>Source Files\Engine</Filter>
@@ -58,5 +49,37 @@
     <ClCompile Include="Engine\Config.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Platform\Win32\D3DRenderer.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Win32\SampleProject_Win32.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Win32\SampleProjectEditor_Win32.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Win32\StringUtilVCpp.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Win32\TypesWin32.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Win32\Win32IO.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\FileHelpers.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform\Win32\Mesh.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Game\Content\Shaders\UIps.hlsl">
+      <Filter>Source Files\Game\Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Game\Content\Shaders\UIvs.hlsl">
+      <Filter>Source Files\Game\Content\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
