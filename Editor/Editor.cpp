@@ -11,20 +11,21 @@ namespace Editor
 	void Init()
 	{
 		BuildUI();
+		Renderer::UpdateUITransformBuffer(UI::Rectangles);
 	}
 
 	void BuildUI()
 	{
-		Utils::Rect mainMenuRect = { /*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ Engine::ScreenRect.Width };
+		Utils::FloatRect mainMenuRect = { /*left*/ 0, /*top*/ 0, /*right*/ Engine::ScreenRect.Width, /*bottom*/ 20 };
 		mainMenu = UI::AddItem(mainMenuRect, 0);
 
-		Utils::Rect fileButtonRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 10, /*right*/ 128 };
+		Utils::FloatRect fileButtonRect = {/*left*/ 0, /*top*/ 0, /*right*/ 128, /*bottom*/ 22 };
 		fileButton = UI::AddItem(fileButtonRect, 1, mainMenu);
 
-		Utils::Rect fileMenuRect = {/*top*/ 0, /*left*/ 0, /*bottom*/ 100, /*right*/ 128 };
-		fileMenu = UI::AddItem(fileButtonRect, 1, mainMenu);
+		Utils::FloatRect fileMenuRect = {/*left*/ 0, /*top*/ 0, /*right*/ 120, /*bottom*/ 100 };
+		fileMenu = UI::AddItem(fileMenuRect, 1, mainMenu);
 
-		Utils::Rect saveButtonRect = {/*top*/ 10, /*left*/ 0, /*bottom*/ 20, /*right*/ 128 };
+		Utils::FloatRect saveButtonRect = {/*left*/ 0, /*top*/ 60, /*right*/ 128, /*bottom*/ 20 };
 		saveButton = UI::AddItem(saveButtonRect, 2, fileMenu);
 	}
 }

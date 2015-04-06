@@ -117,6 +117,9 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Game\Content\Shaders\UIvs.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">5.0</ShaderModel>
@@ -124,6 +127,9 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -191,6 +197,7 @@
     </PostBuildEvent>
     <FxCompile>
       <ObjectFileOutput>$(OutDir)\Content\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -211,6 +218,7 @@
     </PostBuildEvent>
     <FxCompile>
       <ObjectFileOutput>$(OutDir)\Content\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseEditor|Win32'">
@@ -231,6 +239,7 @@
     </PostBuildEvent>
     <FxCompile>
       <ObjectFileOutput>$(OutDir)\Content\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugEditor|Win32'">
@@ -251,6 +260,7 @@
     </PostBuildEvent>
     <FxCompile>
       <ObjectFileOutput>$(OutDir)\Content\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

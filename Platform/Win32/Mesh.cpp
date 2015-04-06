@@ -1,5 +1,28 @@
 namespace Renderer
 {
+	bool CreateConstantBuffer(ID3D11Device* device, ID3D11Buffer** constantBuffer, uInt32 bufferSizeInBytes)
+	{
+		HRESULT hr;
+		D3D11_BUFFER_DESC constantBufferDesc;
+
+		// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
+		constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		constantBufferDesc.ByteWidth = bufferSizeInBytes;
+		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		constantBufferDesc.MiscFlags = 0;
+		constantBufferDesc.StructureByteStride = 0;
+	
+		// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
+		hr = device->CreateBuffer(&constantBufferDesc, NULL, constantBuffer);
+		if(FAILED(hr))
+		{
+			return false;
+		}
+
+	return true;
+	}
+
 	bool CreateAscendingBuffer(ID3D11Device* device, ID3D11Buffer** dataBuffer, uInt32 count)
 	{
 		bool succeeded = true;
@@ -14,7 +37,7 @@ namespace Renderer
 		D3D11_SUBRESOURCE_DATA dataSubresource;
 		HRESULT hr;
 
-		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		bufferDesc.ByteWidth = sizeof(float) * count;
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags = 0;
@@ -57,9 +80,9 @@ namespace Renderer
 			{ 1.0f, 1.0f, 0.5f, 1.0f }
 		};
 
-		uInt32 indices[] = { 0, 2, 1, 1, 2, 3 };
+		uInt32 indices[] = { 0, 1, 2, 1, 3, 2 };
 
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	vertexBufferDesc.ByteWidth = sizeof(vertex) * 4;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
@@ -77,7 +100,7 @@ namespace Renderer
 		return false;
 	}
 
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long) * 6;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;

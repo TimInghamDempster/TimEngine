@@ -21,9 +21,11 @@ namespace Renderer
 	ID3D11Buffer* unitQuadVertexBuffer = 0;
 	ID3D11Buffer* unitQuadIndexBuffer = 0;
 	ID3D11Buffer* ascendingCountBuffer = 0;
+	ID3D11Buffer* uiTransformConstantBuffer = 0;
 
 	float clearColour[4];
 	uInt32 videoCardMemory = 0;
+	uInt32 numUIQuads = 0;
 
 	bool LoadVertexShaderAndBuildInputLayout(std::u16string filename, ID3D11VertexShader** vertexShader, const D3D11_INPUT_ELEMENT_DESC *inputElementDescs, const int32 numInputElelments, ID3D11InputLayout** inputLayout)
 	{
@@ -102,10 +104,9 @@ namespace Renderer
 		IDXGIFactory* factory;
 		IDXGIAdapter* adapter;
 		IDXGIOutput* adapterOutput;
-		unsigned int numModes, i, numerator, denominator, stringLength;
+		unsigned int numModes, i, numerator, denominator;
 		DXGI_MODE_DESC* displayModeList;
 		DXGI_ADAPTER_DESC adapterDesc;
-		int error;
 		DXGI_SWAP_CHAIN_DESC swapChainDesc;
 		D3D_FEATURE_LEVEL featureLevel;
 		ID3D11Texture2D* backBufferPtr;
@@ -114,7 +115,6 @@ namespace Renderer
 		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 		D3D11_RASTERIZER_DESC rasterDesc;
 		D3D11_VIEWPORT viewport;
-		float fieldOfView, screenAspect;
 
 		//Before we can initialize Direct3D we have to get the refresh rate from the video card/monitor. Each computer may be slightly different so we will need to query for that information. We query for the numerator and denominator values and then pass them to DirectX during the setup and it will calculate the proper refresh rate. If we don't do this and just set the refresh rate to a default value which may not exist on all computers then DirectX will respond by performing a blit instead of a buffer flip which will degrade performance and give us annoying errors in the debug output.
 
@@ -448,6 +448,7 @@ namespace Renderer
 		LoadVertexShaderAndBuildInputLayout(Platform::WideStringToUtf16(L"Content\\Shaders\\UIvs.cso"), &uiVertexShader, layout, 2, &uiInputLayout);
 		LoadPixelShader(Platform::WideStringToUtf16(L"Content\\Shaders\\UIps.cso"), &uiPixelShader);
 		CreateQuadMeshBuffers(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer);
+		CreateConstantBuffer(mainDevice, &uiTransformConstantBuffer, 4096*16);
 	}
 
 	void ReportLiveObjects()
@@ -479,6 +480,7 @@ namespace Renderer
 		unitQuadIndexBuffer->Release();
 		unitQuadVertexBuffer->Release();
 		ascendingCountBuffer->Release();
+		uiTransformConstantBuffer->Release();
 
 		ReportLiveObjects();
 		mainDevice->Release();
@@ -506,6 +508,26 @@ namespace Renderer
 	{
 	}
 
+	bool UpdateUITransformBuffer(std::vector<Utils::FloatRect>& newData)
+	{
+		HRESULT hr;
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+
+		hr = deviceContext->Map(uiTransformConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		if(FAILED(hr))
+		{
+			return false;
+		}
+
+		memcpy(mappedResource.pData, newData.data(), newData.size() * sizeof(Utils::FloatRect));
+
+		deviceContext->Unmap(uiTransformConstantBuffer, 0);
+
+		numUIQuads = newData.size();
+
+		return true;
+	}
+
 	void DrawUI()
 	{
 		uInt32 strides[2];
@@ -528,9 +550,11 @@ namespace Renderer
 		deviceContext->IASetInputLayout(uiInputLayout);
 		deviceContext->VSSetShader(uiVertexShader, nullptr, 0);
 		deviceContext->PSSetShader(uiPixelShader, nullptr, 0);
+
+		deviceContext->VSSetConstantBuffers(0, 1, &uiTransformConstantBuffer);
 		
 		// TODO loop over all quads
-		for(uInt32 i = 0; i < 1; i++)
+		for(uInt32 i = 0; i < numUIQuads; i++)
 		{
 			deviceContext->DrawIndexedInstanced(6, 1, 0, 0, i);
 		}

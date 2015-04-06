@@ -3,12 +3,12 @@ namespace UI
 	struct UITag{};
 	typedef Utils::Handle<UITag, int32, -1> UIHandle;
 
-	std::vector<Utils::Rect> Rectangles;
+	std::vector<Utils::FloatRect> Rectangles;
 	std::vector<UIHandle> Parents;
 	std::vector<std::vector<UIHandle> > Children;
 	std::vector<uInt32> Depths;
 
-	UIHandle AddItem(Utils::Rect screenPosition, uInt32 depth, UIHandle parent = UIHandle::Invalid())
+	UIHandle AddItem(Utils::FloatRect screenPosition, uInt32 depth, UIHandle parent = UIHandle::Invalid())
 	{
 		int32 id = Depths.size();
 
@@ -36,6 +36,8 @@ namespace UI
 			// is valid then it's Children vector was created when
 			// the handle was returned.
 			Children[parent.GetValue()].push_back(handle);
+			Rectangles[id].Left += Rectangles[parent.GetValue()].Left;
+			Rectangles[id].Top += Rectangles[parent.GetValue()].Top;
 		}
 
 		return handle;
