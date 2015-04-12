@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <D3D11.h>
+#include <d2d1.h>
 
 #include "../../Engine/Handle.cpp"
 #include "TypesWin32.cpp"
