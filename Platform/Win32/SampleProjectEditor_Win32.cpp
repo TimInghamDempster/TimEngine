@@ -5,12 +5,14 @@
 
 #include <D3D11.h>
 #include <d2d1.h>
+#include <dwrite.h>
 
 #include "../../Engine/Handle.cpp"
 #include "TypesWin32.cpp"
 #include "../../Engine/Rect.cpp"
 #include "../../Engine/Config.cpp"
 #include "StringUtilVCpp.cpp"
+#include "../../Engine/TypesCrossPlatform.cpp"
 #include "../../Engine/Logging.cpp"
 #include "Win32IO.cpp"
 #include "../../Engine/FileHelpers.cpp"

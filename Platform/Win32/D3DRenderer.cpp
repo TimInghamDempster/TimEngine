@@ -2,6 +2,7 @@ namespace Renderer
 {
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d2d1.lib")
+#pragma comment (lib, "dwrite.lib")
 #pragma comment(lib, "DXGI.lib")
 
 	void DrawScene();
@@ -26,13 +27,34 @@ namespace Renderer
 
 	ID2D1Factory* pD2DFactory = nullptr;
 	ID2D1RenderTarget* d2dRenderTarget = nullptr;
+	IDWriteFactory* pDWriteFactory = nullptr;
+	IDWriteTextFormat* pTextFormat = nullptr;
 
 	float clearColour[4];
 	uInt32 videoCardMemory = 0;
 	uInt32 numUIQuads = 0;
 
-	std::vector<D2D1_RECT_F> uiRects;
+	struct UIScreen
+	{
+		std::vector<D2D1_RECT_F> rects;
+		std::vector<UI::UIElementType::Values> elementTypes;
+		std::vector<std::wstring> text;
+	};
+	
 	std::vector<ID2D1SolidColorBrush*> uiBrushes;
+	std::vector<UIScreen> uiScreens;
+
+	UIScreenRenderHandle activeScreenHandle;
+
+	namespace Colours
+	{
+		enum Values
+		{
+			Black,
+			Grey,
+			Count
+		};
+	}
 
 	bool LoadVertexShaderAndBuildInputLayout(std::u16string filename, ID3D11VertexShader** vertexShader, const D3D11_INPUT_ELEMENT_DESC *inputElementDescs, const int32 numInputElelments, ID3D11InputLayout** inputLayout)
 	{
@@ -105,6 +127,57 @@ namespace Renderer
 		return overallSuccess;
 	}
 
+	bool InitDWrite()
+	{
+		HRESULT hr;
+		hr = DWriteCreateFactory(
+			DWRITE_FACTORY_TYPE_SHARED,
+			__uuidof(IDWriteFactory),
+			reinterpret_cast<IUnknown**>(&pDWriteFactory)
+			);
+
+		if(hr != S_OK)
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Error creating DWrite factory."));
+			return false;
+		}
+
+		hr = pDWriteFactory->CreateTextFormat(
+			L"Arial",                // Font family name.
+			NULL,                       // Font collection (NULL sets it to use the system font collection).
+			DWRITE_FONT_WEIGHT_REGULAR,
+			DWRITE_FONT_STYLE_NORMAL,
+			DWRITE_FONT_STRETCH_NORMAL,
+			12.0f,
+			L"en-us",
+			&pTextFormat
+			);
+
+		if(hr != S_OK)
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Error creating DWrite text format."));
+			return false;
+		}
+		
+		hr = pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+		
+		if(hr != S_OK)
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Error text aligning text format"));
+			return false;
+		}
+
+		hr = pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+		if(hr != S_OK)
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Error paragraph aligning text format."));
+			return false;
+		}
+		
+		return true;
+	}
+
 	bool InitD2DDevice()
 	{
 		HRESULT hr;
@@ -161,10 +234,16 @@ namespace Renderer
 		}
 		pBackBuffer->Release();
 
-		uiBrushes.push_back(nullptr);
+		uiBrushes.resize(Colours::Values::Count);
+
 		hr = d2dRenderTarget->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Gray, 1.0f),
-			&(uiBrushes[0])
+			&(uiBrushes[Colours::Values::Grey])
+			);
+
+		hr = d2dRenderTarget->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::Black, 1.0f),
+			&(uiBrushes[Colours::Values::Black])
 			);
 
 		if(hr != S_OK)
@@ -427,9 +506,7 @@ namespace Renderer
 
 		deviceContext->RSSetViewports(1, &viewport);
 
-		bool success = InitD2DDevice();
-
-		return success;
+		return true;
 	}
 
 	void Init(HWND hwnd)
@@ -439,7 +516,12 @@ namespace Renderer
 		clearColour[2] = 1.0f;
 		clearColour[3] = 1.0f;
 
+		// There is an argument to be made for rolling all of these functions into this main
+		// Init.  It would gauruntee that they are only called here and in the correct order.
+		// On the other hand it would make jumping to the specific piece of code much harder.
 		InitD3DDevice(hwnd);
+		InitD2DDevice();
+		InitDWrite();
 
 		CreateAscendingBuffer(mainDevice, &ascendingCountBuffer, 4096);
 
@@ -491,13 +573,15 @@ namespace Renderer
 		ReportLiveObjects();
 		mainDevice->Release();
 
-		pD2DFactory->Release();
-		d2dRenderTarget->Release();
-
 		for(int i = 0; i < uiBrushes.size(); i++)
 		{
 			uiBrushes[i]->Release();
 		}
+
+		d2dRenderTarget->Release();
+		pTextFormat->Release();
+		pD2DFactory->Release();
+		pDWriteFactory->Release();
 	}
 
 
@@ -517,15 +601,28 @@ namespace Renderer
 	{
 	}
 
-	bool UpdateUITransformBuffer(std::vector<Utils::FloatRect>& newData)
+	UIScreenRenderHandle CreateUIScreen(std::vector<Utils::FloatRect>& newData, std::vector<UI::UIElementType::Values>& types, std::vector<std::u16string>& text)
 	{
+		UIScreen uiScreen;
+		UIScreenRenderHandle handle(uiScreens.size());
 		// Not nearly as nasty as it looks.  The memcpy is gaurunteed to work
 		// for POD types which these are.  Very fast and the only possible
 		// hinkiness is the implicit cast.  As FloatRect and D2D1_RECT_F have
 		// the exact same internal structure this is fine as long as neither
 		// change.  Would be very surprised if the D2D rect struct changes.
-		uiRects.resize(newData.size());
-		memcpy(uiRects.data(), newData.data(), newData.size() * sizeof(Utils::FloatRect));
+		uiScreen.rects.resize(newData.size());
+		memcpy(uiScreen.rects.data(), newData.data(), newData.size() * sizeof(Utils::FloatRect));
+
+		uiScreen.elementTypes.resize(types.size());
+		memcpy(uiScreen.elementTypes.data(), types.data(), types.size() * sizeof(UI::UIElementType::Values));
+
+		uiScreen.text.resize(text.size());
+		for(int i = 0; i < text.size(); i++)
+		{
+			uiScreen.text[i] = Platform::Utf16ToWideString(text[i]);
+		}
+
+		uiScreens.push_back(uiScreen);
 
 		/*
 		HRESULT hr;
@@ -543,20 +640,46 @@ namespace Renderer
 
 		numUIQuads = newData.size();*/
 
-		return true;
+		return handle;
+	}
+
+	void SetActiveUIScreen(UIScreenRenderHandle screenHandle)
+	{
+		if(screenHandle != UIScreenRenderHandle::Invalid() && screenHandle.GetValue() <= uiScreens.size())
+		{
+			activeScreenHandle = screenHandle;
+		}
+		else
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Invalid handle passed to Renderer::SetActiveUIScreen"));
+		}
 	}
 
 	void DrawUI()
 	{
-		d2dRenderTarget->BeginDraw();
-
-		for(int i = 0; i < uiRects.size(); i++)
+		if(activeScreenHandle != UIScreenRenderHandle::Invalid() && activeScreenHandle.GetValue() <= uiScreens.size())
 		{
-			d2dRenderTarget->FillRectangle(&uiRects[i], uiBrushes[0]);
+			UIScreen& uiScreen = uiScreens[activeScreenHandle.GetValue()];
+			d2dRenderTarget->BeginDraw();
+
+			for(int i = 0; i < uiScreen.rects.size(); i++)
+			{
+				switch(uiScreen.elementTypes[i])
+				{
+				case UI::UIElementType::Rectangle:
+					{
+						d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[Colours::Grey]);
+					}
+					break;
+				case UI::UIElementType::Text:
+					{
+						d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
+					}
+				}
+			}
+
+			d2dRenderTarget->EndDraw();
 		}
-
-		d2dRenderTarget->EndDraw();
-
 		// Leaving in for now as this is how the main rendering will work.
 		/*uInt32 strides[2];
 		uInt32 offsets[2];

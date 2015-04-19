@@ -1,9 +1,11 @@
 namespace Editor
 {
-	UI::UIHandle mainMenu;
-	UI::UIHandle fileButton;
-	UI::UIHandle fileMenu;
-	UI::UIHandle saveButton;
+	UI::UIScreenHandle editorMainScreen;
+	UI::UIElementHandle mainMenu;
+	UI::UIElementHandle fileButton;
+	UI::UIElementHandle fileButtonText;
+	UI::UIElementHandle fileMenu;
+	UI::UIElementHandle saveButton;
 
 	/* Forward Declarations */
 	void BuildUI();
@@ -11,21 +13,27 @@ namespace Editor
 	void Init()
 	{
 		BuildUI();
-		Renderer::UpdateUITransformBuffer(UI::Rectangles);
 	}
 
 	void BuildUI()
 	{
+		editorMainScreen = UI::CreateScreen();
+
 		Utils::FloatRect mainMenuRect = { /*left*/ 0, /*top*/ 0, /*right*/ Engine::ScreenRect.Width, /*bottom*/ 20 };
-		mainMenu = UI::AddItem(mainMenuRect, 0);
+		mainMenu = UI::AddItem(editorMainScreen, mainMenuRect, 0, UI::UIElementType::Rectangle, std::u16string());
 
 		Utils::FloatRect fileButtonRect = {/*left*/ 0, /*top*/ 0, /*right*/ 128, /*bottom*/ 22 };
-		fileButton = UI::AddItem(fileButtonRect, 1, mainMenu);
+		fileButton = UI::AddItem(editorMainScreen, fileButtonRect, 1, UI::UIElementType::Rectangle, std::u16string(), mainMenu);
+
+		fileButtonText = UI::AddItem(editorMainScreen, fileButtonRect, 2, UI::UIElementType::Text, Platform::WideStringToUtf16(L"File"), mainMenu);
 
 		Utils::FloatRect fileMenuRect = {/*left*/ 0, /*top*/ 0, /*right*/ 120, /*bottom*/ 100 };
-		fileMenu = UI::AddItem(fileMenuRect, 1, mainMenu);
+		fileMenu = UI::AddItem(editorMainScreen, fileMenuRect, 1, UI::UIElementType::Rectangle, std::u16string(), mainMenu);
 
 		Utils::FloatRect saveButtonRect = {/*left*/ 0, /*top*/ 60, /*right*/ 128, /*bottom*/ 20 };
-		saveButton = UI::AddItem(saveButtonRect, 2, fileMenu);
+		saveButton = UI::AddItem(editorMainScreen, saveButtonRect, 2, UI::UIElementType::Rectangle, std::u16string(), fileMenu);
+
+		UI::ScreenUpdateComplete(editorMainScreen);
+		UI::ActivateScreen(editorMainScreen);
 	}
 }
