@@ -76,6 +76,9 @@
     <ClCompile Include="Engine\TypesCrossPlatform.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Platform\Win32\Win32Input.cpp">
+      <Filter>Source Files\Platform\Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Game\Content\Shaders\UIps.hlsl">

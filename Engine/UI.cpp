@@ -13,6 +13,10 @@ namespace UI
 
 	std::vector<Screen> screens;
 
+	void Tick()
+	{
+	}
+
 	UIScreenHandle CreateScreen()
 	{
 		UIScreenHandle handle(screens.size());

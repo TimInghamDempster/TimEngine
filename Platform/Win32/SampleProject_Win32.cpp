@@ -14,6 +14,7 @@
 #include "../../Engine/Config.cpp"
 #include "StringUtilVCpp.cpp"
 #include "../../Engine/TypesCrossPlatform.cpp"
+#include "Win32Input.cpp"
 #include "../../Engine/Logging.cpp"
 #include "Win32IO.cpp"
 #include "../../Engine/FileHelpers.cpp"
@@ -104,6 +105,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			TranslateMessage(&Msg);
 			DispatchMessage(&Msg);
 		}
+		Platform::UpdateCursorPosition(hwnd);
+		UI::Tick();
 		World::Tick();
 		Renderer::Draw();
 	}

@@ -13,6 +13,7 @@
 #include "../../Engine/Config.cpp"
 #include "StringUtilVCpp.cpp"
 #include "../../Engine/TypesCrossPlatform.cpp"
+#include "Win32Input.cpp"
 #include "../../Engine/Logging.cpp"
 #include "Win32IO.cpp"
 #include "../../Engine/FileHelpers.cpp"
