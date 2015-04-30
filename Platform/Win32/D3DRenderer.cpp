@@ -33,12 +33,24 @@ namespace Renderer
 	float clearColour[4];
 	uInt32 videoCardMemory = 0;
 	uInt32 numUIQuads = 0;
+	
+	namespace Colours
+	{
+		enum Values
+		{
+			Black,
+			Grey,
+			LightGrey,
+			Count
+		};
+	}
 
 	struct UIScreen
 	{
 		std::vector<D2D1_RECT_F> rects;
 		std::vector<UI::UIElementType::Values> elementTypes;
 		std::vector<std::wstring> text;
+		std::vector<Colours::Values> colours;
 	};
 	
 	std::vector<ID2D1SolidColorBrush*> uiBrushes;
@@ -46,15 +58,6 @@ namespace Renderer
 
 	UIScreenRenderHandle activeScreenHandle;
 
-	namespace Colours
-	{
-		enum Values
-		{
-			Black,
-			Grey,
-			Count
-		};
-	}
 
 	bool LoadVertexShaderAndBuildInputLayout(std::u16string filename, ID3D11VertexShader** vertexShader, const D3D11_INPUT_ELEMENT_DESC *inputElementDescs, const int32 numInputElelments, ID3D11InputLayout** inputLayout)
 	{
@@ -244,6 +247,11 @@ namespace Renderer
 		hr = d2dRenderTarget->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::Black, 1.0f),
 			&(uiBrushes[Colours::Values::Black])
+			);
+
+		hr = d2dRenderTarget->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::LightGray, 1.0f),
+			&(uiBrushes[Colours::Values::LightGrey])
 			);
 
 		if(hr != S_OK)
@@ -601,20 +609,43 @@ namespace Renderer
 	{
 	}
 
-	UIScreenRenderHandle CreateUIScreen(std::vector<Utils::FloatRect>& newData, std::vector<UI::UIElementType::Values>& types, std::vector<std::u16string>& text)
+	void UpdateColours(UIScreenRenderHandle screen, std::vector<Colours::Values>& colours)
+	{
+		int32 screenId = screen.GetValue();
+		if(screen == UIScreenRenderHandle::Invalid() || screenId >= uiScreens.size())
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to Renderer::UpdateColours"));
+			return;
+		}
+
+		UIScreen& uiScreen = uiScreens[screenId];
+
+		if(colours.size() != uiScreen.colours.size())
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"New colour array wrong size in Renderer::UpdateColours"));
+			return;
+		}
+
+		memcpy(uiScreen.colours.data(), colours.data(), sizeof(Colours::Values) * colours.size());
+	}
+
+	UIScreenRenderHandle CreateUIScreen(std::vector<Utils::FloatRect>& newData, std::vector<UI::UIElementType::Values>& types, std::vector<std::u16string>& text, std::vector<Colours::Values>& colours)
 	{
 		UIScreen uiScreen;
 		UIScreenRenderHandle handle(uiScreens.size());
-		// Not nearly as nasty as it looks.  The memcpy is gaurunteed to work
-		// for POD types which these are.  Very fast and the only possible
-		// hinkiness is the implicit cast.  As FloatRect and D2D1_RECT_F have
-		// the exact same internal structure this is fine as long as neither
-		// change.  Would be very surprised if the D2D rect struct changes.
-		uiScreen.rects.resize(newData.size());
-		memcpy(uiScreen.rects.data(), newData.data(), newData.size() * sizeof(Utils::FloatRect));
+
+		uiScreen.rects.reserve(newData.size());
+		for(int i = 0; i < newData.size(); i++)
+		{
+			D2D1_RECT_F rect = {newData[i].Left, newData[i].Top, newData[i].Left + newData[i].Width, newData[i].Top + newData[i].Height};
+			uiScreen.rects.push_back(rect);
+		}
 
 		uiScreen.elementTypes.resize(types.size());
 		memcpy(uiScreen.elementTypes.data(), types.data(), types.size() * sizeof(UI::UIElementType::Values));
+
+		uiScreen.colours.resize(colours.size());
+		memcpy(uiScreen.colours.data(), colours.data(), sizeof(Colours::Values) * colours.size());
 
 		uiScreen.text.resize(text.size());
 		for(int i = 0; i < text.size(); i++)
@@ -668,7 +699,7 @@ namespace Renderer
 				{
 				case UI::UIElementType::Rectangle:
 					{
-						d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[Colours::Grey]);
+						d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[uiScreen.colours[i]]);
 					}
 					break;
 				case UI::UIElementType::Text:

@@ -27,7 +27,7 @@ namespace Editor
 
 		fileButtonText = UI::AddItem(editorMainScreen, fileButtonRect, 2, UI::UIElementType::Text, Platform::WideStringToUtf16(L"File"), mainMenu);
 
-		Utils::FloatRect fileMenuRect = {/*left*/ 0, /*top*/ 0, /*right*/ 120, /*bottom*/ 100 };
+		Utils::FloatRect fileMenuRect = {/*left*/ 0, /*top*/ 22, /*right*/ 120, /*bottom*/ 100 };
 		fileMenu = UI::AddItem(editorMainScreen, fileMenuRect, 1, UI::UIElementType::Rectangle, std::u16string(), mainMenu);
 
 		Utils::FloatRect saveButtonRect = {/*left*/ 0, /*top*/ 60, /*right*/ 128, /*bottom*/ 20 };

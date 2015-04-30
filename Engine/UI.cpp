@@ -12,9 +12,67 @@ namespace UI
 	};
 
 	std::vector<Screen> screens;
+	UIScreenHandle activeScreen;
+
+	void DoMouseOver(int32 item)
+	{
+		// TODO gaurd against invalid active screen here?
+		Screen& screen = screens[activeScreen.GetValue()];
+		std::vector<Renderer::Colours::Values> colours;
+		colours.reserve(screen.rectangles.size());
+		for(int  i = 0; i < screen.rectangles.size(); i++)
+		{
+			if(i == item)
+			{
+				colours.push_back(Renderer::Colours::LightGrey);
+			}
+			else
+			{
+				colours.push_back(Renderer::Colours::Grey);
+			}
+		}
+
+		Renderer::UpdateColours(screen.renderHandle, colours);
+
+	}
 
 	void Tick()
 	{
+		if(activeScreen != UIScreenHandle::Invalid())
+		{
+			float cursorX = Platform::CursorPosition.x;
+			float cursorY = Platform::CursorPosition.y;
+
+			if(cursorX < 128 && cursorY < 22)
+			{
+				int a = 0;
+				a++;
+			}
+
+			Screen& screen = screens[activeScreen.GetValue()];
+			
+			for(int i = screen.rectangles.size() - 1; i >= 0; i--)
+			{
+				float minX = screen.rectangles[i].Left;
+				float minY = screen.rectangles[i].Top;
+				float maxX = screen.rectangles[i].Left + screen.rectangles[i].Width;
+				float maxY = screen.rectangles[i].Top + screen.rectangles[i].Height;
+
+
+				if(cursorX < maxX &&
+					cursorY < maxY &&
+					cursorX > minX &&
+					cursorY > minY)
+				{
+					if(screen.elementTypes[i] != UIElementType::Text)
+					{
+						DoMouseOver(i);
+						break;
+					}
+				}
+
+			}
+		}
 	}
 
 	UIScreenHandle CreateScreen()
@@ -83,6 +141,7 @@ namespace UI
 
 		Screen& screen = screens[screenId];
 
+		activeScreen = screenHandle;
 		Renderer::SetActiveUIScreen(screen.renderHandle);
 	}
 
@@ -98,6 +157,13 @@ namespace UI
 
 		Screen& screen = screens[screenId];
 
-		screen.renderHandle = Renderer::CreateUIScreen(screen.rectangles, screen.elementTypes, screen.textStrings);
+		std::vector<Renderer::Colours::Values> colours;
+		colours.reserve(screen.rectangles.size());
+		for(int  i = 0; i < screen.rectangles.size(); i++)
+		{
+			colours.push_back(Renderer::Colours::Grey);
+		}
+
+		screen.renderHandle = Renderer::CreateUIScreen(screen.rectangles, screen.elementTypes, screen.textStrings, colours);
 	}
 }
