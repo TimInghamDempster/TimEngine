@@ -41,6 +41,7 @@ namespace Renderer
 			Black,
 			Grey,
 			LightGrey,
+			Transparent,
 			Count
 		};
 	}
@@ -695,16 +696,19 @@ namespace Renderer
 
 			for(int i = 0; i < uiScreen.rects.size(); i++)
 			{
-				switch(uiScreen.elementTypes[i])
+				if(uiScreen.colours[i] != Colours::Transparent)
 				{
-				case UI::UIElementType::Rectangle:
+					switch(uiScreen.elementTypes[i])
 					{
-						d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[uiScreen.colours[i]]);
-					}
-					break;
-				case UI::UIElementType::Text:
-					{
-						d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
+					case UI::UIElementType::Rectangle:
+						{
+							d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[uiScreen.colours[i]]);
+						}
+						break;
+					case UI::UIElementType::Text:
+						{
+							d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
+						}
 					}
 				}
 			}

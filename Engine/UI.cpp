@@ -9,6 +9,7 @@ namespace UI
 		std::vector<UIElementType::Values> elementTypes;
 		std::vector<std::u16string> textStrings;
 		Renderer::UIScreenRenderHandle renderHandle;
+		UIElementHandle rootElement;
 	};
 
 	std::vector<Screen> screens;
@@ -75,14 +76,12 @@ namespace UI
 		}
 	}
 
-	UIScreenHandle CreateScreen()
-	{
-		UIScreenHandle handle(screens.size());
-		screens.push_back(Screen());
-		return handle;
-	}
-
-	UIElementHandle AddItem(UIScreenHandle screenHandle, Utils::FloatRect screenPosition, uInt32 depth, UIElementType::Values type, std::u16string text, UIElementHandle parent = UIElementHandle::Invalid())
+	UIElementHandle AddItem(UIScreenHandle screenHandle, 
+		Utils::FloatRect screenPosition, 
+		uInt32 depth, 
+		UIElementType::Values type, 
+		std::u16string text,
+		UIElementHandle parent = UIElementHandle::Invalid())
 	{
 		int32 screenId = screenHandle.GetValue();
 		
@@ -102,6 +101,11 @@ namespace UI
 		}
 
 		UIElementHandle handle = UIElementHandle(screen.rectangles.size());
+
+		if(parent == UIElementHandle::Invalid() && type != UIElementType::ScreenRoot)
+		{
+			parent = screen.rootElement;
+		}
 
 		// Gaurunteed to be safe, id can never be < 0 so we can never
 		// be before .begin and id can never be > .size therefore 
@@ -125,6 +129,17 @@ namespace UI
 			screen.rectangles[id].Left += screen.rectangles[parent.GetValue()].Left;
 			screen.rectangles[id].Top += screen.rectangles[parent.GetValue()].Top;
 		}
+
+		return handle;
+	}
+
+	UIScreenHandle CreateScreen(Utils::FloatRect screenRect)
+	{
+		UIScreenHandle handle(screens.size());
+		screens.push_back(Screen());
+
+		UIElementHandle root = AddItem(handle, screenRect, 0, UIElementType::ScreenRoot, std::u16string());
+		screens[handle.GetValue()].rootElement = root;
 
 		return handle;
 	}

@@ -1,4 +1,4 @@
 namespace Engine
 {
-	Utils::uRect ScreenRect;
+	Utils::FloatRect ScreenRect;
 }

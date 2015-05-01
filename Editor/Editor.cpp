@@ -17,7 +17,7 @@ namespace Editor
 
 	void BuildUI()
 	{
-		editorMainScreen = UI::CreateScreen();
+		editorMainScreen = UI::CreateScreen(Engine::ScreenRect);
 
 		Utils::FloatRect mainMenuRect = { /*left*/ 0, /*top*/ 0, /*right*/ Engine::ScreenRect.Width, /*bottom*/ 20 };
 		mainMenu = UI::AddItem(editorMainScreen, mainMenuRect, 0, UI::UIElementType::Rectangle, std::u16string());
