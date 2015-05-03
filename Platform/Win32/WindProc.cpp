@@ -1,7 +1,5 @@
 const wchar_t g_className[] = L"myWindowClass";
 bool g_running;
-bool g_leftButtonClicked = false;
-bool g_rightButtonClicked = false;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -15,9 +13,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             PostQuitMessage(0);
         break;
 		case WM_LBUTTONDOWN:
-			g_leftButtonClicked = true;
+			UI::g_leftButtonClicked = true;
 		case WM_RBUTTONDOWN:
-			g_rightButtonClicked = true;
+			UI::g_rightButtonClicked = true;
 			break;
         default:
             return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -83,14 +81,14 @@ int WINAPI IndirectedWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	while (g_running)
 	{
+		UI::g_leftButtonClicked = false;
+		UI::g_rightButtonClicked = false;
+
 		while(PeekMessage(&Msg, NULL, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&Msg);
 			DispatchMessage(&Msg);
 		}
-
-		g_leftButtonClicked = false;
-		g_rightButtonClicked = false;
 
 		Platform::UpdateCursorPosition(hwnd);
 		UI::Tick();

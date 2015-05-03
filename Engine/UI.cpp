@@ -14,6 +14,12 @@ namespace UI
 
 	std::vector<Screen> screens;
 	UIScreenHandle activeScreen;
+	bool g_leftButtonClicked = false;
+	bool g_rightButtonClicked = false;
+
+	void DoMouseClick(int32 item)
+	{
+	}
 
 	void DoMouseOver(int32 item)
 	{
@@ -67,7 +73,14 @@ namespace UI
 				{
 					if(screen.elementTypes[i] != UIElementType::Text)
 					{
-						DoMouseOver(i);
+						if(g_leftButtonClicked)
+						{
+							DoMouseClick(i);
+						}
+						else
+						{
+							DoMouseOver(i);
+						}
 						break;
 					}
 				}
