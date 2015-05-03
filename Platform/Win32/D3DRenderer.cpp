@@ -698,17 +698,10 @@ namespace Renderer
 			{
 				if(uiScreen.colours[i] != Colours::Transparent)
 				{
-					switch(uiScreen.elementTypes[i])
+					if(uiScreen.elementTypes[i] != UI::UIElementType::ScreenRoot)
 					{
-					case UI::UIElementType::Rectangle:
-						{
-							d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[uiScreen.colours[i]]);
-						}
-						break;
-					case UI::UIElementType::Text:
-						{
-							d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
-						}
+						d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[uiScreen.colours[i]]);
+						d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
 					}
 				}
 			}

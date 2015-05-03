@@ -5,8 +5,9 @@ namespace UI
 		enum Values
 		{
 			ScreenRoot,
-			Rectangle,
-			Text
+			Label,
+			Button,
+			MenuButton
 		};
 	}
 

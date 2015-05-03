@@ -71,18 +71,15 @@ namespace UI
 					cursorX > minX &&
 					cursorY > minY)
 				{
-					if(screen.elementTypes[i] != UIElementType::Text)
+					if(g_leftButtonClicked)
 					{
-						if(g_leftButtonClicked)
-						{
-							DoMouseClick(i);
-						}
-						else
-						{
-							DoMouseOver(i);
-						}
-						break;
+						DoMouseClick(i);
 					}
+					else
+					{
+						DoMouseOver(i);
+					}
+					break;
 				}
 
 			}
