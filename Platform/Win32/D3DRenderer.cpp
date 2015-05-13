@@ -52,6 +52,7 @@ namespace Renderer
 		std::vector<UI::UIElementType::Values> elementTypes;
 		std::vector<std::wstring> text;
 		std::vector<Colours::Values> colours;
+		std::vector<char> visible;
 	};
 	
 	std::vector<ID2D1SolidColorBrush*> uiBrushes;
@@ -610,7 +611,7 @@ namespace Renderer
 	{
 	}
 
-	void UpdateColours(UIScreenRenderHandle screen, std::vector<Colours::Values>& colours)
+	void UpdateUIColours(UIScreenRenderHandle screen, std::vector<Colours::Values>& colours)
 	{
 		int32 screenId = screen.GetValue();
 		if(screen == UIScreenRenderHandle::Invalid() || screenId >= uiScreens.size())
@@ -623,14 +624,38 @@ namespace Renderer
 
 		if(colours.size() != uiScreen.colours.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"New colour array wrong size in Renderer::UpdateColours"));
+			Engine::Log(Platform::WideStringToUtf16(L"New colour array wrong size in Renderer::UpdateUIColours"));
 			return;
 		}
 
 		memcpy(uiScreen.colours.data(), colours.data(), sizeof(Colours::Values) * colours.size());
 	}
 
-	UIScreenRenderHandle CreateUIScreen(std::vector<Utils::FloatRect>& newData, std::vector<UI::UIElementType::Values>& types, std::vector<std::u16string>& text, std::vector<Colours::Values>& colours)
+	void UpdateUIVisibility(UIScreenRenderHandle screen, std::vector<char>& visible)
+	{
+		int32 screenId = screen.GetValue();
+		if(screen == UIScreenRenderHandle::Invalid() || screenId >= uiScreens.size())
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to Renderer::UpdateUIVisibility"));
+			return;
+		}
+
+		UIScreen& uiScreen = uiScreens[screenId];
+
+		if(visible.size() != uiScreen.visible.size())
+		{
+			Engine::Log(Platform::WideStringToUtf16(L"New colour array wrong size in Renderer::UpdateUIVisibility"));
+			return;
+		}
+
+		memcpy(uiScreen.visible.data(), visible.data(), sizeof(char) * visible.size());
+	}
+
+	UIScreenRenderHandle CreateUIScreen(std::vector<Utils::FloatRect>& newData,
+		std::vector<UI::UIElementType::Values>& types,
+		std::vector<std::u16string>& text,
+		std::vector<Colours::Values>& colours,
+		std::vector<char>& visible)
 	{
 		UIScreen uiScreen;
 		UIScreenRenderHandle handle(uiScreens.size());
@@ -647,6 +672,9 @@ namespace Renderer
 
 		uiScreen.colours.resize(colours.size());
 		memcpy(uiScreen.colours.data(), colours.data(), sizeof(Colours::Values) * colours.size());
+
+		uiScreen.visible.resize(visible.size());
+		memcpy(uiScreen.visible.data(), visible.data(), sizeof(bool) * visible.size());
 
 		uiScreen.text.resize(text.size());
 		for(int i = 0; i < text.size(); i++)
@@ -696,13 +724,13 @@ namespace Renderer
 
 			for(int i = 0; i < uiScreen.rects.size(); i++)
 			{
-				if(uiScreen.colours[i] != Colours::Transparent)
+				if(uiScreen.visible[i] == true)
 				{
-					if(uiScreen.elementTypes[i] != UI::UIElementType::ScreenRoot)
+					if(uiScreen.colours[i] != Colours::Transparent)
 					{
 						d2dRenderTarget->FillRectangle(uiScreen.rects[i], uiBrushes[uiScreen.colours[i]]);
-						d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
 					}
+					d2dRenderTarget->DrawTextW(uiScreen.text[i].c_str(), uiScreen.text[i].size(), pTextFormat, &uiScreen.rects[i], uiBrushes[Colours::Black]);
 				}
 			}
 
