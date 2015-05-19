@@ -13,6 +13,9 @@ namespace UI
 		std::vector<char> visible;
 		std::vector<char> isOnActivePath;
 		std::vector<UIElementHandle> rootElements;
+		std::vector<Renderer::Colours::Values> backgroundColours;
+		std::vector<Renderer::Colours::Values> mouseOverColours;
+		std::vector<void (*)(UIElementHandle)> clickFunctions;
 		Renderer::UIScreenRenderHandle renderHandle;
 	};
 
@@ -115,6 +118,10 @@ namespace UI
 		switch (screen.elementTypes[item])
 		{
 		case UIElementType::Button:
+			if(screen.clickFunctions[item] != nullptr)
+			{
+				screen.clickFunctions[item](UIElementHandle(item));
+			}
 			break;
 		case UIElementType::MenuButton:
 			screen.expanded[item] = screen.expanded[item] ? false : true;
@@ -126,7 +133,7 @@ namespace UI
 	{
 		// TODO gaurd against invalid active screen here?
 		Screen& screen = screens[activeScreen.GetValue()];
-		screen.itemColours[item] = Renderer::Colours::Grey;
+		screen.itemColours[item] = screen.backgroundColours[item];
 
 		Renderer::UpdateUIColours(screen.renderHandle, screen.itemColours);
 
@@ -137,7 +144,7 @@ namespace UI
 	{
 		// TODO gaurd against invalid active screen here?
 		Screen& screen = screens[activeScreen.GetValue()];
-		screen.itemColours[item] = Renderer::Colours::LightGrey;
+		screen.itemColours[item] = screen.mouseOverColours[item];
 
 		Renderer::UpdateUIColours(screen.renderHandle, screen.itemColours);
 
@@ -240,10 +247,12 @@ namespace UI
 		uInt32 depth, 
 		UIElementType::Values type, 
 		std::u16string text,
-		Renderer::Colours::Values colour,
+		Renderer::Colours::Values backgroundColour,
+		Renderer::Colours::Values mouseOverColour,
 		bool expanded,
 		bool visible,
-		UIElementHandle parent = UIElementHandle::Invalid())
+		UIElementHandle parent = UIElementHandle::Invalid(),
+		void(*OnClick)(UIElementHandle) = nullptr)
 	{
 		int32 screenId = screenHandle.GetValue();
 		
@@ -278,8 +287,11 @@ namespace UI
 		screen.textStrings.insert(screen.textStrings.begin() + id, text);
 		screen.visible.insert(screen.visible.begin() + id, visible);
 		screen.expanded.insert(screen.expanded.begin() + id, expanded);
-		screen.itemColours.insert(screen.itemColours.begin() + id, colour);
+		screen.itemColours.insert(screen.itemColours.begin() + id, backgroundColour);
 		screen.isOnActivePath.insert(screen.isOnActivePath.begin() + id, false);
+		screen.backgroundColours.insert(screen.backgroundColours.begin() + id, backgroundColour);
+		screen.mouseOverColours.insert(screen.mouseOverColours.begin() + id, mouseOverColour);
+		screen.clickFunctions.insert(screen.clickFunctions.begin() + id, OnClick);
 
 		if(parent != UIElementHandle::Invalid())
 		{

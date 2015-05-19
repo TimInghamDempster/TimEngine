@@ -172,7 +172,7 @@ namespace Renderer
 			return false;
 		}
 
-		hr = pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+		hr = pTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
 		if(hr != S_OK)
 		{
