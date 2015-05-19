@@ -48,12 +48,23 @@ HWND TimEngineCreateWindow(HINSTANCE hInstance)
         return 0;
     }
 
+	RECT  wrect;
+	DWORD style = WS_BORDER;
+
+	 // Define desired client size.
+	wrect.left   = 0;
+	wrect.top    = 0;
+	wrect.right  = 1280;
+	wrect.bottom = 720;
+  
+	AdjustWindowRect(&wrect,style,false);
+
     hwnd = CreateWindowEx(
         WS_EX_CLIENTEDGE,
         g_className,
         L"TimEngine Sample Project",
-        WS_POPUP,
-        CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
+        style,
+		CW_USEDEFAULT, CW_USEDEFAULT, wrect.right, wrect.bottom,
         NULL, NULL, hInstance, NULL);
 
 	Engine::ScreenRect.Top = 0;
