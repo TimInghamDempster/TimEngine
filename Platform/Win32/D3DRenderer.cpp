@@ -361,8 +361,8 @@ namespace Renderer
 
 		swapChainDesc.BufferCount = 1;
 
-		swapChainDesc.BufferDesc.Width = Engine::ScreenRect.Width;
-		swapChainDesc.BufferDesc.Height = Engine::ScreenRect.Height;
+		swapChainDesc.BufferDesc.Width = (UINT)Engine::ScreenRect.Width;
+		swapChainDesc.BufferDesc.Height = (UINT)Engine::ScreenRect.Height;
 
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
@@ -428,8 +428,8 @@ namespace Renderer
 
 		ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
-		depthBufferDesc.Width = Engine::ScreenRect.Width;
-		depthBufferDesc.Height = Engine::ScreenRect.Height;
+		depthBufferDesc.Width = (UINT)Engine::ScreenRect.Width;
+		depthBufferDesc.Height = (UINT)Engine::ScreenRect.Height;
 		depthBufferDesc.MipLevels = 1;
 		depthBufferDesc.ArraySize = 1;
 		depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -583,7 +583,7 @@ namespace Renderer
 		ReportLiveObjects();
 		mainDevice->Release();
 
-		for(int i = 0; i < uiBrushes.size(); i++)
+		for(uInt32 i = 0; i < uiBrushes.size(); i++)
 		{
 			uiBrushes[i]->Release();
 		}
@@ -614,7 +614,7 @@ namespace Renderer
 	void UpdateUIColours(UIScreenRenderHandle screen, std::vector<Colours::Values>& colours)
 	{
 		int32 screenId = screen.GetValue();
-		if(screen == UIScreenRenderHandle::Invalid() || screenId >= uiScreens.size())
+		if(screen == UIScreenRenderHandle::Invalid() || screenId >= (int32)uiScreens.size())
 		{
 			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to Renderer::UpdateColours"));
 			return;
@@ -634,7 +634,7 @@ namespace Renderer
 	void UpdateUIVisibility(UIScreenRenderHandle screen, std::vector<char>& visible)
 	{
 		int32 screenId = screen.GetValue();
-		if(screen == UIScreenRenderHandle::Invalid() || screenId >= uiScreens.size())
+		if(screen == UIScreenRenderHandle::Invalid() || screenId >= (int32)uiScreens.size())
 		{
 			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to Renderer::UpdateUIVisibility"));
 			return;
@@ -661,7 +661,7 @@ namespace Renderer
 		UIScreenRenderHandle handle(uiScreens.size());
 
 		uiScreen.rects.reserve(newData.size());
-		for(int i = 0; i < newData.size(); i++)
+		for(uInt32 i = 0; i < newData.size(); i++)
 		{
 			D2D1_RECT_F rect = {newData[i].Left, newData[i].Top, newData[i].Left + newData[i].Width, newData[i].Top + newData[i].Height};
 			uiScreen.rects.push_back(rect);
@@ -677,7 +677,7 @@ namespace Renderer
 		memcpy(uiScreen.visible.data(), visible.data(), sizeof(bool) * visible.size());
 
 		uiScreen.text.resize(text.size());
-		for(int i = 0; i < text.size(); i++)
+		for(uInt32 i = 0; i < text.size(); i++)
 		{
 			uiScreen.text[i] = Platform::Utf16ToWideString(text[i]);
 		}
@@ -705,7 +705,7 @@ namespace Renderer
 
 	void SetActiveUIScreen(UIScreenRenderHandle screenHandle)
 	{
-		if(screenHandle != UIScreenRenderHandle::Invalid() && screenHandle.GetValue() <= uiScreens.size())
+		if(screenHandle != UIScreenRenderHandle::Invalid() && screenHandle.GetValue() <= (int32)uiScreens.size())
 		{
 			activeScreenHandle = screenHandle;
 		}
@@ -717,14 +717,14 @@ namespace Renderer
 
 	void DrawUI()
 	{
-		if(activeScreenHandle != UIScreenRenderHandle::Invalid() && activeScreenHandle.GetValue() <= uiScreens.size())
+		if(activeScreenHandle != UIScreenRenderHandle::Invalid() && activeScreenHandle.GetValue() <= (int32)uiScreens.size())
 		{
 			UIScreen& uiScreen = uiScreens[activeScreenHandle.GetValue()];
 			d2dRenderTarget->BeginDraw();
 
-			for(int i = 0; i < uiScreen.rects.size(); i++)
+			for(uInt32 i = 0; i < uiScreen.rects.size(); i++)
 			{
-				if(uiScreen.visible[i] == true)
+				if(uiScreen.visible[i])
 				{
 					if(uiScreen.colours[i] != Colours::Transparent)
 					{

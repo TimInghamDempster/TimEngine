@@ -29,7 +29,7 @@ namespace UI
 	{
 		int32 screenId = screenHandle.GetValue();
 		
-		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= screens.size())
+		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
 			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::UpdateLayout"));
 			return;
@@ -40,7 +40,7 @@ namespace UI
 		std::vector<UIElementHandle> active;
 		std::vector<UIElementHandle> inactive;
 		
-		for(int i = 0; i < screen.rootElements.size(); i++)
+		for(uInt32 i = 0; i < screen.rootElements.size(); i++)
 		{
 			active.push_back(screen.rootElements[i]);
 		}
@@ -54,7 +54,7 @@ namespace UI
 			std::vector<UIElementHandle> toAddActive;
 			std::vector<UIElementHandle> toAddInactive;
 
-			for(int i = 0; i < active.size(); i++)
+			for(uInt32 i = 0; i < active.size(); i++)
 			{
 				int32 item = active[i].GetValue();
 				if(screen.children[item].size() > 0)
@@ -62,7 +62,7 @@ namespace UI
 					itemsToProcess = true;
 					if(screen.expanded[item])
 					{
-						for(int j = 0; j < screen.children[item].size(); j++)
+						for(uInt32 j = 0; j < screen.children[item].size(); j++)
 						{
 							UIElementHandle child = screen.children[item][j];
 							screen.visible[child.GetValue()] = true;
@@ -71,7 +71,7 @@ namespace UI
 					}
 					else
 					{
-						for(int j = 0; j < screen.children[item].size(); j++)
+						for(uInt32 j = 0; j < screen.children[item].size(); j++)
 						{
 							UIElementHandle child = screen.children[item][j];
 							screen.visible[child.GetValue()] = false;
@@ -81,14 +81,14 @@ namespace UI
 				}
 			}
 
-			for(int i = 0; i < inactive.size(); i++)
+			for(uInt32 i = 0; i < inactive.size(); i++)
 			{
 				int32 item = inactive[i].GetValue();
 
 				if(screen.children[item].size() > 0)
 				{
 					itemsToProcess = true;
-					for(int j = 0; j < screen.children[item].size(); j++)
+					for(uInt32 j = 0; j < screen.children[item].size(); j++)
 					{
 						UIElementHandle child = screen.children[item][j];
 						screen.visible[child.GetValue()] = false;
@@ -162,8 +162,8 @@ namespace UI
 	{
 		if(activeScreen != UIScreenHandle::Invalid())
 		{
-			float cursorX = Platform::CursorPosition.x;
-			float cursorY = Platform::CursorPosition.y;
+			int32 cursorX = Platform::CursorPosition.x;
+			int32 cursorY = Platform::CursorPosition.y;
 
 			if(cursorX < 128 && cursorY < 22)
 			{
@@ -221,15 +221,15 @@ namespace UI
 			}
 			if(mouseOverChanged == true)
 			{
-				for(int i = 0; i < screen.expanded.size(); i++)
+				for(uInt32 i = 0; i < screen.expanded.size(); i++)
 				{
 					if(screen.elementTypes[i] == UIElementType::MenuButton)
 					{
 						bool subExpansion = false;
-						for(int j = 0; j < screen.children[i].size(); j++)
+						for(uInt32 j = 0; j < screen.children[i].size(); j++)
 						{
 							int childId = screen.children[i][j].GetValue();
-							if(screen.isOnActivePath[childId] == true)
+							if(screen.isOnActivePath[childId])
 							{
 								subExpansion = true;
 							}
@@ -256,7 +256,7 @@ namespace UI
 	{
 		int32 screenId = screenHandle.GetValue();
 		
-		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= screens.size())
+		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
 			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::AddItem"));
 			return UIElementHandle::Invalid();
@@ -322,7 +322,7 @@ namespace UI
 	{		
 		int32 screenId = screenHandle.GetValue();
 		
-		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= screens.size())
+		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
 			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::ActivateScreen"));
 			return ;
@@ -338,7 +338,7 @@ namespace UI
 	{
 		int32 screenId = screenHandle.GetValue();
 		
-		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= screens.size())
+		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
 			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::ScreenUpdateComplete"));
 			return ;
