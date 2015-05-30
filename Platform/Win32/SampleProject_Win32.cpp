@@ -21,7 +21,9 @@
 #include "Mesh.cpp"
 #include "D3DRenderer.cpp"
 #include "../../Engine/UI.cpp"
-#include "../../Engine/GameWorld.cpp"
+#include "../../Engine/Vector.cpp"
+#include "../../Engine/World.cpp"
+#include "../../Game/Game.cpp"
 
 #include "WindProc.cpp"
 
@@ -36,6 +38,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 
 	Renderer::Init(hwnd);
+
+	Game::Init();
 
 	return IndirectedWinMain(hInstance, hPrevInstance,
 		lpCmdLine, nCmdShow, hwnd);

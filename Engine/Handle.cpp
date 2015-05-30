@@ -1,4 +1,4 @@
-namespace Utils
+namespace Engine
 {
 	template<class Tag, class impl, impl default_value>
 	class Handle
@@ -23,5 +23,56 @@ namespace Utils
 
 	private:
 		impl m_val;
+	};
+	
+
+	template<class HandleType, class DataContainer>
+	class StableHandleList
+	{
+		std::vector<char> m_alive;
+		std::vector<HandleType> m_freeHandles;
+
+		bool m_canGrow;
+		
+	public:
+
+		StableHandleList(int initialCount, bool canGrow) : m_canGrow(canGrow)
+		{
+			m_alive.reserve(initialCount);
+		}
+
+		DataContainer lists;
+
+		HandleType AddItem()
+		{
+			HandleType handle;
+			if(m_freeHandles.size() != 0)
+			{
+				handle = *m_freeHandles.end();
+				m_freeHandles.pop_back();
+				m_alive[handle.GetValue()] = true;
+			} 
+			else if (m_canGrow)
+			{
+				handle = HandleType(m_alive.size());
+				m_alive.push_back(true);
+			}
+			return handle;
+		};
+
+		bool RemoveItem(HandleType handle)
+		{
+			if(handle != HandleType::Invalid())
+			{
+				int32 index = handle.GetValue();
+				if(index < m_alive.size())
+				{
+					m_alive[index] = false;
+					m_freeHandles.push_back(handle);
+					return true;
+				}
+			}
+			return false;
+		}
 	};
 }

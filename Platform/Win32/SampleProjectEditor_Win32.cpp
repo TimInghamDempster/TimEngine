@@ -20,7 +20,8 @@
 #include "Mesh.cpp"
 #include "D3DRenderer.cpp"
 #include "../../Engine/UI.cpp"
-#include "../../Engine/GameWorld.cpp"
+#include "../../Engine/Vector.cpp"
+#include "../../Engine/World.cpp"
 #include "../../Editor/Editor.cpp"
 
 #include "WindProc.cpp"
