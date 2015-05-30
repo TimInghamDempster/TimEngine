@@ -43,6 +43,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	return IndirectedWinMain(hInstance, hPrevInstance,
 		lpCmdLine, nCmdShow, hwnd);
-
-	Renderer::CleanUp();
 }

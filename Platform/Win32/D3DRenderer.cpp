@@ -255,6 +255,10 @@ namespace Renderer
 			D2D1::ColorF(D2D1::ColorF::LightGray, 1.0f),
 			&(uiBrushes[Colours::Values::LightGrey])
 			);
+		hr = d2dRenderTarget->CreateSolidColorBrush(
+			D2D1::ColorF(D2D1::ColorF::White, 1.0f),
+			&(uiBrushes[Colours::Values::Transparent])
+			);
 
 		if(hr != S_OK)
 		{

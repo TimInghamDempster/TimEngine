@@ -10,6 +10,7 @@ namespace Editor
 
 		void Quit(UI::UIElementHandle button)
 		{
+			Engine::shouldQuit = true;
 		}
 
 		void BuildUI()

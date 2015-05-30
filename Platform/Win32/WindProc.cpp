@@ -1,13 +1,11 @@
 const wchar_t g_className[] = L"myWindowClass";
-bool g_running;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch(msg)
     {
         case WM_CLOSE:
-            DestroyWindow(hwnd);
-			g_running = false;
+			Engine::shouldQuit = true;
         break;
         case WM_DESTROY:
             PostQuitMessage(0);
@@ -25,6 +23,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 HWND TimEngineCreateWindow(HINSTANCE hInstance)
 {
+	Engine::shouldQuit = false;
+
     WNDCLASSEX wc;
     HWND hwnd;
 
@@ -85,12 +85,10 @@ int WINAPI IndirectedWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
     MSG Msg;
 
-	g_running = true;
-
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
-	while (g_running)
+	while (Engine::shouldQuit == false)
 	{
 		UI::g_leftButtonClicked = false;
 		UI::g_rightButtonClicked = false;
@@ -105,6 +103,10 @@ int WINAPI IndirectedWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		UI::Tick();
 		Renderer::Draw();
 	}
+
+	
+	Renderer::CleanUp();
+	DestroyWindow(hwnd);
 
     return 0;
 }
