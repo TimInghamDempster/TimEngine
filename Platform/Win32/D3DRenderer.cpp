@@ -61,7 +61,7 @@ namespace Renderer
 	UIScreenRenderHandle activeScreenHandle;
 
 
-	bool LoadVertexShaderAndBuildInputLayout(std::u16string filename, ID3D11VertexShader** vertexShader, const D3D11_INPUT_ELEMENT_DESC *inputElementDescs, const int32 numInputElelments, ID3D11InputLayout** inputLayout)
+	bool LoadVertexShaderAndBuildInputLayout(std::string filename, ID3D11VertexShader** vertexShader, const D3D11_INPUT_ELEMENT_DESC *inputElementDescs, const int32 numInputElelments, ID3D11InputLayout** inputLayout)
 	{
 		bool overallSuccess = true;
 
@@ -77,7 +77,7 @@ namespace Renderer
 
 			if(hr != S_OK)
 			{
-				Engine::Log(Platform::WideStringToUtf16(L"Error creating vertex shader: ") + filename);
+				Engine::Log("Error creating vertex shader: " + filename);
 				overallSuccess = false;
 			}
 		}
@@ -92,7 +92,7 @@ namespace Renderer
 
 			if(hr != S_OK)
 			{
-				Engine::Log(Platform::WideStringToUtf16(L"Error creating input layout for vertex shader: ") + filename);
+				Engine::Log("Error creating input layout for vertex shader: " + filename);
 				overallSuccess = false;
 			}
 		}
@@ -102,7 +102,7 @@ namespace Renderer
 		return overallSuccess;
 	}
 
-	bool LoadPixelShader(std::u16string filename, ID3D11PixelShader** pixelShader)
+	bool LoadPixelShader(std::string filename, ID3D11PixelShader** pixelShader)
 	{
 		bool overallSuccess = true;
 
@@ -118,7 +118,7 @@ namespace Renderer
 
 			if(hr != S_OK)
 			{
-				Engine::Log(Platform::WideStringToUtf16(L"Error creating pixel shader: ") + filename);
+				Engine::Log("Error creating pixel shader: " + filename);
 				overallSuccess = false;
 			}
 		}
@@ -143,7 +143,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Error creating DWrite factory."));
+			Engine::Log("Error creating DWrite factory.");
 			return false;
 		}
 
@@ -160,7 +160,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Error creating DWrite text format."));
+			Engine::Log("Error creating DWrite text format.");
 			return false;
 		}
 		
@@ -168,7 +168,7 @@ namespace Renderer
 		
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Error text aligning text format"));
+			Engine::Log("Error text aligning text format");
 			return false;
 		}
 
@@ -176,7 +176,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Error paragraph aligning text format."));
+			Engine::Log("Error paragraph aligning text format.");
 			return false;
 		}
 		
@@ -198,7 +198,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Failed to create d2d factory"));
+			Engine::Log("Failed to create d2d factory");
 			return false;
 		}
 
@@ -222,7 +222,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Failed to get back buffer for d2d setup"));
+			Engine::Log("Failed to get back buffer for d2d setup");
 			return false;
 		}
 
@@ -234,7 +234,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Failed to create d2d render target"));
+			Engine::Log("Failed to create d2d render target");
 			return false;
 		}
 		pBackBuffer->Release();
@@ -262,7 +262,7 @@ namespace Renderer
 
 		if(hr != S_OK)
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Failed to create ui brush"));
+			Engine::Log("Failed to create ui brush");
 			return false;
 		}
 
@@ -547,8 +547,8 @@ namespace Renderer
 			D3D11_INPUT_PER_INSTANCE_DATA, 0 },
 		};
 
-		LoadVertexShaderAndBuildInputLayout(Platform::WideStringToUtf16(L"Content\\Shaders\\UIvs.cso"), &uiVertexShader, layout, 2, &uiInputLayout);
-		LoadPixelShader(Platform::WideStringToUtf16(L"Content\\Shaders\\UIps.cso"), &uiPixelShader);
+		LoadVertexShaderAndBuildInputLayout("Content\\Shaders\\UIvs.cso", &uiVertexShader, layout, 2, &uiInputLayout);
+		LoadPixelShader("Content\\Shaders\\UIps.cso", &uiPixelShader);
 		CreateQuadMeshBuffers(mainDevice, &unitQuadVertexBuffer, &unitQuadIndexBuffer);
 		CreateConstantBuffer(mainDevice, &uiTransformConstantBuffer, 4096*16);
 	}
@@ -620,7 +620,7 @@ namespace Renderer
 		int32 screenId = screen.GetValue();
 		if(screen == UIScreenRenderHandle::Invalid() || screenId >= (int32)uiScreens.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to Renderer::UpdateColours"));
+			Engine::Log("Invalid screen handle passed to Renderer::UpdateColours");
 			return;
 		}
 
@@ -628,7 +628,7 @@ namespace Renderer
 
 		if(colours.size() != uiScreen.colours.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"New colour array wrong size in Renderer::UpdateUIColours"));
+			Engine::Log("New colour array wrong size in Renderer::UpdateUIColours");
 			return;
 		}
 
@@ -640,7 +640,7 @@ namespace Renderer
 		int32 screenId = screen.GetValue();
 		if(screen == UIScreenRenderHandle::Invalid() || screenId >= (int32)uiScreens.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to Renderer::UpdateUIVisibility"));
+			Engine::Log("Invalid screen handle passed to Renderer::UpdateUIVisibility");
 			return;
 		}
 
@@ -648,7 +648,7 @@ namespace Renderer
 
 		if(visible.size() != uiScreen.visible.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"New colour array wrong size in Renderer::UpdateUIVisibility"));
+			Engine::Log("New colour array wrong size in Renderer::UpdateUIVisibility");
 			return;
 		}
 
@@ -657,7 +657,7 @@ namespace Renderer
 
 	UIScreenRenderHandle CreateUIScreen(std::vector<Utils::FloatRect>& newData,
 		std::vector<UI::UIElementType::Values>& types,
-		std::vector<std::u16string>& text,
+		std::vector<std::string>& text,
 		std::vector<Colours::Values>& colours,
 		std::vector<char>& visible)
 	{
@@ -683,7 +683,7 @@ namespace Renderer
 		uiScreen.text.resize(text.size());
 		for(uInt32 i = 0; i < text.size(); i++)
 		{
-			uiScreen.text[i] = Platform::Utf16ToWideString(text[i]);
+			uiScreen.text[i] = Platform::Utf8ToWideString(text[i]);
 		}
 
 		uiScreens.push_back(uiScreen);
@@ -715,7 +715,7 @@ namespace Renderer
 		}
 		else
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid handle passed to Renderer::SetActiveUIScreen"));
+			Engine::Log("Invalid handle passed to Renderer::SetActiveUIScreen");
 		}
 	}
 

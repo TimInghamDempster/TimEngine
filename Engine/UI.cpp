@@ -7,7 +7,7 @@ namespace UI
 		std::vector<std::vector<UIElementHandle> > children;
 		std::vector<uInt32> depths;
 		std::vector<UIElementType::Values> elementTypes;
-		std::vector<std::u16string> textStrings;
+		std::vector<std::string> textStrings;
 		std::vector<Renderer::Colours::Values> itemColours;
 		std::vector<char> expanded;
 		std::vector<char> visible;
@@ -31,7 +31,7 @@ namespace UI
 		
 		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::UpdateLayout"));
+			Engine::Log("Invalid screen handle passed to UI::UpdateLayout");
 			return;
 		}
 
@@ -246,7 +246,7 @@ namespace UI
 		Utils::FloatRect screenPosition, 
 		uInt32 depth, 
 		UIElementType::Values type, 
-		std::u16string text,
+		std::string text,
 		Renderer::Colours::Values backgroundColour,
 		Renderer::Colours::Values mouseOverColour,
 		bool expanded,
@@ -258,7 +258,7 @@ namespace UI
 		
 		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::AddItem"));
+			Engine::Log("Invalid screen handle passed to UI::AddItem");
 			return UIElementHandle::Invalid();
 		}
 
@@ -324,7 +324,7 @@ namespace UI
 		
 		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::ActivateScreen"));
+			Engine::Log("Invalid screen handle passed to UI::ActivateScreen");
 			return ;
 		}
 
@@ -340,7 +340,7 @@ namespace UI
 		
 		if(screenId == UIScreenHandle::Invalid().GetValue() || screenId >= (int32)screens.size())
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Invalid screen handle passed to UI::ScreenUpdateComplete"));
+			Engine::Log("Invalid screen handle passed to UI::ScreenUpdateComplete");
 			return ;
 		}
 

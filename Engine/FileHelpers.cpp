@@ -1,6 +1,6 @@
 namespace Engine
 {
-	char* ReadBinaryFile(std::u16string filename, int32& outFileLength, bool& outSuccess)
+	char* ReadBinaryFile(std::string filename, int32& outFileLength, bool& outSuccess)
 	{
 		std::ifstream file;
 		bool result = Platform::OpenForRead(filename, file, std::ios::binary);

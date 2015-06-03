@@ -51,7 +51,7 @@ namespace Renderer
 		hr = device->CreateBuffer(&bufferDesc, &dataSubresource, dataBuffer);
 		if(FAILED(hr))
 		{
-			Engine::Log(Platform::WideStringToUtf16(L"Failed to generate buffer"));
+			Engine::Log("Failed to generate buffer");
 			succeeded = false;
 		}
 		delete[] data;
@@ -96,7 +96,7 @@ namespace Renderer
 	hr = device->CreateBuffer(&vertexBufferDesc, &vertexData, vertexBuffer);
 	if(FAILED(hr))
 	{
-		Engine::Log(Platform::WideStringToUtf16(L"Failed to generate vertex buffer"));
+		Engine::Log("Failed to generate vertex buffer");
 		return false;
 	}
 
@@ -114,7 +114,7 @@ namespace Renderer
 	hr = device->CreateBuffer(&indexBufferDesc, &indexData, indexBuffer);
 	if(FAILED(hr))
 	{
-		Engine::Log(Platform::WideStringToUtf16(L"Failed to generate index buffer"));
+		Engine::Log("Failed to generate index buffer");
 		return false;
 	}
 
