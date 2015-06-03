@@ -1,8 +1,11 @@
 
 #include <windows.h>
+#include <shobjidl.h> 
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <vector>
+#include <Shlwapi.h>
 
 #include <D3D11.h>
 #include <d2d1.h>
